@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Body Wanted</title>
   <style>
     * {
@@ -14,12 +14,13 @@
     html, body {
       width: 100%;
       height: 100%;
-      background: #000000;
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #1a0033 100%);
       color: #ffffff;
       font-family: 'Courier New', monospace;
       overflow: hidden;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
     #game-container {
@@ -32,29 +33,29 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 40px 20px;
+      padding: 2vh 2vw;
+      overflow: hidden;
     }
 
-    /* Vignette Effect */
-    #vignette {
+    /* Background with cute elements */
+    #bg-layer {
       position: fixed;
       inset: 0;
-      background: radial-gradient(ellipse at center, transparent 20%, rgba(0, 0, 0, 0.8) 100%);
-      pointer-events: none;
-      z-index: 1;
+      background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #1a0033 100%);
+      z-index: 0;
+      transition: all 0.5s ease;
+      filter: brightness(1);
     }
 
-    #vignette.pulse-red {
-      animation: pulse-vignette-red 0.8s ease-in-out infinite;
+    #bg-layer.distorted {
+      background: linear-gradient(135deg, #330000 0%, #660000 50%, #330000 100%);
+      filter: brightness(0.8) saturate(1.5);
+      animation: bg-glitch 0.2s infinite;
     }
 
-    @keyframes pulse-vignette-red {
-      0%, 100% {
-        background: radial-gradient(ellipse at center, transparent 20%, rgba(139, 0, 0, 0.3) 100%);
-      }
-      50% {
-        background: radial-gradient(ellipse at center, transparent 20%, rgba(200, 0, 0, 0.6) 100%);
-      }
+    @keyframes bg-glitch {
+      0%, 100% { filter: brightness(0.8) saturate(1.5) hue-rotate(0deg); }
+      50% { filter: brightness(0.6) saturate(2) hue-rotate(10deg); }
     }
 
     /* Score Display */
@@ -62,71 +63,79 @@
       position: relative;
       z-index: 10;
       text-align: center;
-      margin-top: 20px;
+      margin-top: 1vh;
     }
 
     .score-label {
-      font-size: 12px;
-      letter-spacing: 3px;
-      color: #444;
-      margin-bottom: 8px;
+      font-size: clamp(10px, 2vw, 16px);
+      letter-spacing: 2px;
+      color: #aaa;
+      margin-bottom: 0.5vh;
     }
 
     #score-num {
-      font-size: 64px;
+      font-size: clamp(40px, 10vw, 80px);
       font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-      letter-spacing: 4px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      letter-spacing: 3px;
     }
 
     /* Play Area */
     #play-field {
       position: relative;
       width: 100%;
-      height: 60vh;
-      max-width: 600px;
+      height: 70vh;
+      max-width: 90vw;
+      max-height: 80vh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
+      justify-content: space-between;
       z-index: 5;
     }
 
     /* Block Track */
     .block-track {
-      position: absolute;
-      top: 0;
-      left: 0;
+      position: relative;
       width: 100%;
-      height: 80px;
+      height: 12vh;
       display: flex;
       align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 1rem;
+      padding: 1vh;
     }
 
-    /* Player Block */
+    /* Player Block - The Box */
     #player-block {
       position: absolute;
-      height: 28px;
-      background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #ffffff 100%);
-      border-radius: 14px;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.3);
-      transition: none;
+      height: 4vh;
+      background: linear-gradient(135deg, #ffffff 0%, #e8e8e8 50%, #ffffff 100%);
+      border-radius: 1rem;
+      box-shadow: 0 0 2vw rgba(255, 255, 255, 0.9), inset 0 0 1vw rgba(255, 255, 255, 0.4);
+      transition: all 0.05s ease;
       left: 0;
-      top: 26px;
+      min-width: 8vw;
+      cursor: grab;
+    }
+
+    #player-block:active {
+      cursor: grabbing;
     }
 
     #player-block.pulse {
-      animation: block-pulse 0.3s ease-out;
+      animation: block-pulse 0.4s ease-out;
     }
 
     @keyframes block-pulse {
       0% {
         transform: scale(1);
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 2vw rgba(255, 255, 255, 0.9), inset 0 0 1vw rgba(255, 255, 255, 0.4);
       }
       100% {
-        transform: scale(1.05);
-        box-shadow: 0 0 50px rgba(255, 255, 255, 1), inset 0 0 20px rgba(0, 255, 100, 0.4);
+        transform: scale(1.1);
+        box-shadow: 0 0 4vw rgba(0, 255, 100, 1), inset 0 0 2vw rgba(0, 255, 100, 0.5);
       }
     }
 
@@ -134,41 +143,56 @@
     #voids-container {
       position: relative;
       width: 100%;
-      height: 100%;
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding: 2vh;
+      gap: 2vw;
     }
 
     /* Void Vessel */
     .void-vessel {
-      position: absolute;
-      bottom: 0;
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
+      transition: all 0.2s ease;
     }
 
     /* Void Background */
     .void-body {
       position: relative;
-      background: radial-gradient(ellipse at center 30%, rgba(20, 20, 40, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+      background: radial-gradient(ellipse at center 30%, rgba(20, 20, 40, 0.95) 0%, rgba(10, 10, 20, 0.98) 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
+      box-shadow: inset 0 0 3vw rgba(0, 0, 0, 0.95), 0 0 2vw rgba(100, 100, 150, 0.3);
+      transition: all 0.3s ease;
     }
 
     .void-vessel.breathing .void-body {
       animation: void-breathe 2.5s ease-in-out infinite;
     }
 
+    .void-body.angry-distorted {
+      background: radial-gradient(ellipse at center 30%, rgba(80, 20, 20, 0.95) 0%, rgba(40, 10, 10, 0.98) 100%);
+      box-shadow: inset 0 0 3vw rgba(255, 0, 0, 0.5), 0 0 2vw rgba(255, 0, 0, 0.4);
+      animation: void-distort 0.15s infinite;
+    }
+
     @keyframes void-breathe {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.08);
-      }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    @keyframes void-distort {
+      0%, 100% { transform: scale(1) skewX(0deg) skewY(0deg); }
+      25% { transform: scale(1.05) skewX(-2deg) skewY(2deg); }
+      50% { transform: scale(0.98) skewX(2deg) skewY(-2deg); }
+      75% { transform: scale(1.03) skewX(-1deg) skewY(-1deg); }
     }
 
     /* Chibi Face */
@@ -185,109 +209,113 @@
     /* Eyes Container */
     .eyes-container {
       position: absolute;
-      top: 25%;
+      top: 20%;
       display: flex;
-      gap: 30%;
-      width: 70%;
+      gap: 25%;
+      width: 80%;
       justify-content: center;
     }
 
-    /* Single Eye */
+    /* Single Eye - Cute */
     .eye {
-      width: 30px;
-      height: 40px;
+      width: 3vw;
+      height: 4vw;
       background: #ffffff;
-      border-radius: 50% 50% 40% 40%;
+      border-radius: 60% 60% 40% 40%;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 0.5vw rgba(255, 255, 255, 0.6), inset 0 -0.3vw 0.5vw rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .eye.scared {
+      width: 4vw;
+      height: 5vw;
+      background: #ffaaaa;
+      box-shadow: 0 0 1vw rgba(255, 100, 100, 0.8), inset 0 -0.3vw 0.5vw rgba(0, 0, 0, 0.4);
     }
 
     .pupil {
-      width: 16px;
-      height: 20px;
+      width: 1.5vw;
+      height: 2vw;
       background: #1a1a2e;
       border-radius: 50%;
       position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .eye.scared .pupil {
+      width: 2vw;
+      height: 2.5vw;
+      background: #ff0000;
     }
 
     .sparkle {
       position: absolute;
-      width: 6px;
-      height: 6px;
+      width: 0.6vw;
+      height: 0.6vw;
       background: #ffffff;
       border-radius: 50%;
-      top: 3px;
-      left: 3px;
-      box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+      top: 0.2vw;
+      left: 0.2vw;
+      box-shadow: 0 0 0.3vw rgba(255, 255, 255, 0.9);
     }
 
-    /* Star Burst Eyes (Perfect Fit) */
+    /* Star Burst Eyes */
     .eye.starburst {
-      width: 50px;
-      height: 50px;
+      width: 5vw;
+      height: 5vw;
       background: conic-gradient(from 0deg, #ffff00, #ffffff, #ffff00);
       border-radius: 50%;
       animation: starburst-spin 0.4s ease-out;
     }
 
-    .eye.starburst::before {
-      content: '';
-      position: absolute;
-      width: 60%;
-      height: 60%;
-      background: radial-gradient(circle, #ffffff 0%, transparent 70%);
-      border-radius: 50%;
-    }
-
     @keyframes starburst-spin {
-      0% {
-        transform: scale(0.5) rotate(0deg);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1) rotate(360deg);
-        opacity: 1;
-      }
+      0% { transform: scale(0.5) rotate(0deg); opacity: 0; }
+      100% { transform: scale(1) rotate(360deg); opacity: 1; }
     }
 
     /* Eyebrows */
     .eyebrow {
       position: absolute;
-      height: 4px;
+      height: 0.4vw;
       background: #1a1a2e;
-      border-radius: 2px;
+      border-radius: 0.2vw;
       transition: all 0.3s ease;
     }
 
     .eyebrow.left {
-      top: 18px;
+      top: 15%;
       left: 8%;
-      width: 20%;
+      width: 18%;
       transform: rotate(0deg);
     }
 
     .eyebrow.right {
-      top: 18px;
+      top: 15%;
       right: 8%;
-      width: 20%;
+      width: 18%;
       transform: rotate(0deg);
     }
 
+    .eyebrow.angry {
+      background: #ff3333;
+    }
+
     .eyebrow.angry-left {
-      transform: rotate(-25deg);
+      transform: rotate(-30deg);
     }
 
     .eyebrow.angry-right {
-      transform: rotate(25deg);
+      transform: rotate(30deg);
     }
 
     /* Cheeks */
     .cheeks-container {
       position: absolute;
-      top: 45%;
+      top: 50%;
       width: 100%;
       display: flex;
       justify-content: space-between;
@@ -295,83 +323,70 @@
     }
 
     .blush {
-      width: 20px;
-      height: 14px;
-      background: radial-gradient(ellipse, rgba(255, 100, 160, 0.7) 0%, transparent 70%);
+      width: 2vw;
+      height: 1.5vw;
+      background: radial-gradient(ellipse, rgba(255, 120, 180, 0.8) 0%, transparent 70%);
       border-radius: 50%;
-      filter: blur(2px);
+      filter: blur(0.2vw);
       transition: all 0.3s ease;
     }
 
     .blush.glow-green {
-      background: radial-gradient(ellipse, rgba(0, 255, 100, 0.9) 0%, transparent 70%);
-      box-shadow: 0 0 15px rgba(0, 255, 100, 0.7);
+      background: radial-gradient(ellipse, rgba(0, 255, 100, 0.95) 0%, transparent 70%);
+      box-shadow: 0 0 1.5vw rgba(0, 255, 100, 0.8);
       animation: blush-pulse 0.4s ease-out;
     }
 
-    .blush.glow-orange {
-      background: radial-gradient(ellipse, rgba(255, 140, 20, 0.8) 0%, transparent 70%);
-    }
-
     .blush.glow-red {
-      background: radial-gradient(ellipse, rgba(255, 50, 50, 0.9) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(255, 50, 50, 0.95) 0%, transparent 70%);
+      box-shadow: 0 0 1.5vw rgba(255, 50, 50, 0.8);
     }
 
     @keyframes blush-pulse {
-      0% {
-        transform: scale(1);
-        opacity: 0.5;
-      }
-      100% {
-        transform: scale(1.3);
-        opacity: 1;
-      }
+      0% { transform: scale(1); opacity: 0.5; }
+      100% { transform: scale(1.4); opacity: 1; }
     }
 
     /* Mouth */
     .mouth {
       position: absolute;
-      bottom: 20%;
-      width: 24px;
-      height: 12px;
-      border-bottom: 3px solid #ffffff;
-      border-radius: 0 0 12px 12px;
+      bottom: 15%;
+      width: 2.5vw;
+      height: 1.2vw;
+      border-bottom: 0.3vw solid #ffffff;
+      border-radius: 0 0 1.2vw 1.2vw;
       transition: all 0.3s ease;
     }
 
     .mouth.worried {
-      width: 20px;
-      height: 2px;
-      border-bottom: 2px solid #000;
+      width: 2vw;
+      height: 0.2vw;
+      border-bottom: 0.2vw solid #000;
       border-radius: 0;
     }
 
     .mouth.angry {
-      width: 28px;
-      height: 3px;
+      width: 3vw;
+      height: 0.3vw;
       border: none;
-      border-top: 3px solid #ff3b3b;
+      border-top: 0.3vw solid #ff3b3b;
       border-radius: 0;
-      transform: rotate(15deg);
+      transform: rotate(20deg);
     }
 
-    .mouth.yawn {
-      width: 40px;
-      height: 50px;
+    .mouth.distorted {
+      width: 4vw;
+      height: 3vw;
       border: none;
       border-radius: 50%;
-      background: rgba(0, 0, 0, 0.8);
-      border: 4px solid #333;
-      animation: yawn-pulse 0.3s ease-out;
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: inset 0 0 1vw rgba(255, 0, 0, 0.5);
+      animation: mouth-twitch 0.1s infinite;
     }
 
-    @keyframes yawn-pulse {
-      0% {
-        transform: scaleY(0);
-      }
-      100% {
-        transform: scaleY(1);
-      }
+    @keyframes mouth-twitch {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.8); }
     }
 
     /* Speech Bubble */
@@ -382,9 +397,9 @@
       transform: translateX(-50%);
       background: rgba(30, 30, 40, 0.95);
       border: 1px solid #333;
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 11px;
+      border-radius: 0.8vw;
+      padding: 0.5vw 1vw;
+      font-size: clamp(8px, 1.5vw, 14px);
       white-space: nowrap;
       color: #aaa;
       pointer-events: none;
@@ -396,14 +411,14 @@
     .speech-bubble::after {
       content: '';
       position: absolute;
-      bottom: -6px;
+      bottom: -0.6vw;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-top: 6px solid rgba(30, 30, 40, 0.95);
+      border-left: 0.6vw solid transparent;
+      border-right: 0.6vw solid transparent;
+      border-top: 0.6vw solid rgba(30, 30, 40, 0.95);
     }
 
     .speech-bubble.visible {
@@ -426,40 +441,46 @@
     }
 
     #jumpscare-overlay.shake {
-      animation: screen-shake 0.1s infinite;
+      animation: screen-shake 0.08s infinite;
     }
 
     @keyframes screen-shake {
       0%, 100% { transform: translate(0, 0); }
-      25% { transform: translate(-15px, -15px); }
-      50% { transform: translate(15px, 15px); }
-      75% { transform: translate(-10px, 10px); }
+      25% { transform: translate(-2vw, -2vw); }
+      50% { transform: translate(2vw, 2vw); }
+      75% { transform: translate(-1.5vw, 1.5vw); }
     }
 
     .monster-face {
-      width: 300px;
-      height: 300px;
+      width: clamp(200px, 50vw, 400px);
+      height: clamp(200px, 50vw, 400px);
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      animation: monster-grow 0.5s ease-out;
+    }
+
+    @keyframes monster-grow {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .monster-eye {
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle at 35% 35%, #ff6666 0%, #cc0000 100%);
+      width: clamp(80px, 15vw, 150px);
+      height: clamp(80px, 15vw, 150px);
+      background: radial-gradient(circle at 35% 35%, #ff3333 0%, #cc0000 100%);
       border-radius: 50%;
       position: relative;
-      margin-bottom: 20px;
-      box-shadow: 0 0 30px rgba(255, 100, 100, 0.8);
-      animation: monster-twitch 0.15s infinite;
+      margin-bottom: 2vh;
+      box-shadow: 0 0 3vw rgba(255, 50, 50, 0.9);
+      animation: monster-twitch 0.1s infinite;
     }
 
     .monster-pupil {
-      width: 40px;
-      height: 40px;
+      width: 50%;
+      height: 50%;
       background: #000;
       border-radius: 50%;
       position: absolute;
@@ -469,29 +490,58 @@
     }
 
     @keyframes monster-twitch {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(3px); }
+      0%, 100% { transform: translateX(0) scaleX(1.1); }
+      50% { transform: translateX(2vw) scaleX(1); }
     }
 
     .monster-mouth {
-      width: 180px;
-      height: 80px;
-      background: radial-gradient(circle at center 20%, #1a1a1a 0%, #000 100%);
-      border: 5px solid #330000;
+      width: clamp(150px, 30vw, 250px);
+      height: clamp(60px, 12vw, 120px);
+      background: radial-gradient(circle at center 20%, #000 0%, #330000 100%);
+      border: 0.5vw solid #660000;
       border-radius: 50%;
       position: relative;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
+      box-shadow: inset 0 0 3vw rgba(0, 0, 0, 0.95);
+      animation: monster-yawn 0.3s ease-out;
     }
 
-    .monster-mouth::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 30%;
-      width: 15px;
-      height: 30px;
-      background: #550000;
-      border-radius: 50%;
+    @keyframes monster-yawn {
+      0% { transform: scaleY(0); }
+      100% { transform: scaleY(1); }
+    }
+
+    /* Guide Text */
+    #guide {
+      position: relative;
+      z-index: 10;
+      font-size: clamp(10px, 2vw, 14px);
+      letter-spacing: 1px;
+      color: #666;
+      margin-bottom: 1vh;
+      text-align: center;
+      transition: opacity 0.3s ease;
+    }
+
+    /* State Classes */
+    .twitching {
+      animation: twitch 0.08s infinite;
+    }
+
+    @keyframes twitch {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(-0.3vw, -0.3vw); }
+      50% { transform: translate(0.3vw, 0.3vw); }
+      75% { transform: translate(-0.2vw, 0.2vw); }
+    }
+
+    .glitch {
+      animation: glitch-effect 0.3s ease-out;
+    }
+
+    @keyframes glitch-effect {
+      0% { opacity: 0; transform: translateX(-1vw); }
+      50% { opacity: 0.5; }
+      100% { opacity: 0; transform: translateX(1vw); }
     }
 
     /* Terminal View */
@@ -501,154 +551,42 @@
       background: #000000;
       z-index: 2000;
       display: none;
-      padding: 40px;
-      font-size: 14px;
+      padding: 4vh;
+      font-size: clamp(12px, 2vw, 16px);
       color: #00ff00;
       overflow: hidden;
     }
 
     #terminal-view.active {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     #typewriter {
-      letter-spacing: 2px;
+      letter-spacing: 0.2vw;
       font-weight: bold;
     }
 
     .cursor {
       display: inline-block;
-      width: 2px;
-      height: 20px;
+      width: 0.2vw;
+      height: 2vw;
       background: #00ff00;
-      margin-left: 4px;
+      margin-left: 0.4vw;
       animation: cursor-blink 1s step-end infinite;
     }
 
     @keyframes cursor-blink {
       50% { opacity: 0; }
     }
-
-    /* Stick Figure Body */
-    .stick-body {
-      position: absolute;
-      bottom: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 200px;
-    }
-
-    .stick-body.emerge {
-      animation: body-emerge 1.2s ease-out forwards;
-    }
-
-    @keyframes body-emerge {
-      from {
-        bottom: 0;
-        opacity: 0;
-      }
-      to {
-        bottom: -200px;
-        opacity: 1;
-      }
-    }
-
-    /* Head */
-    .stick-head {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 30px;
-      height: 30px;
-      border: 2px solid #ffffff;
-      border-radius: 50%;
-    }
-
-    /* Body Line */
-    .stick-torso {
-      position: absolute;
-      top: 35px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 2px;
-      height: 50px;
-      background: #ffffff;
-    }
-
-    /* Arms */
-    .stick-arm {
-      position: absolute;
-      top: 45px;
-      width: 40px;
-      height: 2px;
-      background: #ffffff;
-    }
-
-    .stick-arm.left {
-      left: 0;
-    }
-
-    .stick-arm.right {
-      right: 0;
-    }
-
-    /* Legs */
-    .stick-leg {
-      position: absolute;
-      bottom: 0;
-      width: 2px;
-      height: 60px;
-      background: #ffffff;
-    }
-
-    .stick-leg.left {
-      left: 18px;
-    }
-
-    .stick-leg.right {
-      right: 18px;
-    }
-
-    /* Guide Text */
-    #guide {
-      position: relative;
-      z-index: 10;
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: #333;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    /* State Classes */
-    .twitching {
-      animation: twitch 0.1s infinite;
-    }
-
-    @keyframes twitch {
-      0%, 100% { transform: translate(0, 0); }
-      25% { transform: translate(-2px, -2px); }
-      50% { transform: translate(2px, 2px); }
-      75% { transform: translate(-1px, 1px); }
-    }
-
-    .glitch {
-      animation: glitch-effect 0.3s ease-out;
-    }
-
-    @keyframes glitch-effect {
-      0% { opacity: 0; transform: translateX(-5px); }
-      50% { opacity: 0.5; }
-      100% { opacity: 0; transform: translateX(5px); }
-    }
   </style>
 </head>
 <body>
-  <div id="game-container">
-    <div id="vignette"></div>
+  <div id="bg-layer"></div>
 
+  <div id="game-container">
     <div id="score-board">
       <div class="score-label">SCORE</div>
       <div id="score-num">0</div>
@@ -661,7 +599,7 @@
       <div id="voids-container"></div>
     </div>
 
-    <div id="guide">[ HOLD MOUSE TO MOVE ]</div>
+    <div id="guide">[ HOLD / TAP TO MOVE ]</div>
   </div>
 
   <div id="jumpscare-overlay">
@@ -678,9 +616,25 @@
   </div>
 
   <script>
-    const GAME_WIDTH = 600;
-    const GAME_HEIGHT = window.innerHeight * 0.6;
-    const PERFECT_FIT_TOLERANCE = 15;
+    // Responsive game configuration
+    const getGameConfig = () => {
+      const isMobile = window.innerWidth < 768;
+      return {
+        GAME_WIDTH: window.innerWidth * 0.95,
+        GAME_HEIGHT: window.innerHeight * 0.70,
+        BLOCK_WIDTH_MIN: Math.max(60, window.innerWidth * 0.08),
+        BLOCK_WIDTH_INITIAL: Math.max(80, window.innerWidth * 0.12),
+        VOID_WIDTH_MIN: Math.max(80, window.innerWidth * 0.10),
+        VOID_HEIGHT_MIN: Math.max(100, window.innerHeight * 0.12),
+        PERFECT_FIT_TOLERANCE: 20
+      };
+    };
+
+    let config = getGameConfig();
+    window.addEventListener('resize', () => {
+      config = getGameConfig();
+    });
+
     const PHASES = {
       INCUBATION: { min: 0, max: 4, voids: 1 },
       ROOMMATES: { min: 5, max: 9, voids: 2 },
@@ -688,35 +642,30 @@
       SYNTHESIS: { min: 15, max: Infinity, voids: 1 }
     };
 
+    // DOM Elements
     const gameContainer = document.getElementById('game-container');
     const playField = document.getElementById('play-field');
     const playerBlock = document.getElementById('player-block');
     const voidsContainer = document.getElementById('voids-container');
     const scoreNum = document.getElementById('score-num');
-    const vignette = document.getElementById('vignette');
+    const bgLayer = document.getElementById('bg-layer');
     const guide = document.getElementById('guide');
     const jumpscareOverlay = document.getElementById('jumpscare-overlay');
     const terminalView = document.getElementById('terminal-view');
     const typewriter = document.getElementById('typewriter');
 
+    // Game State
     let score = 0;
     let consecutiveMisses = 0;
     let gameActive = true;
     let isHolding = false;
-    let blockWidth = 60;
-    let blockX = GAME_WIDTH / 2 - blockWidth / 2;
+    let blockWidth = config.BLOCK_WIDTH_INITIAL;
+    let blockX = (config.GAME_WIDTH - blockWidth) / 2;
     let gamePhase = 'INCUBATION';
 
     let voids = [];
     let nextVoidId = 0;
     let dialogInterval = null;
-
-    const chibiFaces = [
-      { eyeGap: 0.35, eyeSize: 30, blushSize: 20, mouthSize: 24, personality: 'cheerful' },
-      { eyeGap: 0.32, eyeSize: 28, blushSize: 18, mouthSize: 22, personality: 'sleepy' },
-      { eyeGap: 0.38, eyeSize: 32, blushSize: 22, mouthSize: 26, personality: 'energetic' },
-      { eyeGap: 0.30, eyeSize: 26, blushSize: 16, mouthSize: 20, personality: 'shy' }
-    ];
 
     const dialogues = [
       "Stop squishing me!",
@@ -736,11 +685,12 @@
       gamePhase = 'INCUBATION';
       voids = [];
       nextVoidId = 0;
+      blockWidth = config.BLOCK_WIDTH_INITIAL;
+      blockX = (config.GAME_WIDTH - blockWidth) / 2;
       playerBlock.style.width = blockWidth + 'px';
       playerBlock.style.left = blockX + 'px';
       scoreNum.textContent = '0';
-      vignette.classList.remove('pulse-red');
-      guide.textContent = '[ HOLD MOUSE TO MOVE ]';
+      bgLayer.classList.remove('distorted');
       guide.style.opacity = '1';
 
       createVoidsForPhase();
@@ -752,41 +702,32 @@
       voids = [];
 
       if (gamePhase === 'INCUBATION') {
-        createVoid(GAME_WIDTH / 2 - 60, 120, chibiFaces[0], nextVoidId++);
+        createVoid(config.GAME_WIDTH / 2 - config.VOID_WIDTH_MIN / 2, config.VOID_WIDTH_MIN, nextVoidId++);
       } else if (gamePhase === 'ROOMMATES') {
-        createVoid(GAME_WIDTH * 0.3 - 60, 120, chibiFaces[0], nextVoidId++);
-        createVoid(GAME_WIDTH * 0.7 - 60, 120, chibiFaces[1], nextVoidId++);
+        createVoid(config.GAME_WIDTH * 0.25, config.VOID_WIDTH_MIN, nextVoidId++);
+        createVoid(config.GAME_WIDTH * 0.75 - config.VOID_WIDTH_MIN, config.VOID_WIDTH_MIN, nextVoidId++);
         startDialogues();
       } else if (gamePhase === 'CONSUMPTION') {
-        createVoid(Math.random() * (GAME_WIDTH - 120), Math.random() * (GAME_HEIGHT * 0.6), chibiFaces[0], nextVoidId++);
-        createVoid(Math.random() * (GAME_WIDTH - 120), Math.random() * (GAME_HEIGHT * 0.6), chibiFaces[1], nextVoidId++);
-        createVoid(Math.random() * (GAME_WIDTH - 120), Math.random() * (GAME_HEIGHT * 0.6), chibiFaces[2], nextVoidId++);
-        createVoid(Math.random() * (GAME_WIDTH - 120), Math.random() * (GAME_HEIGHT * 0.6), chibiFaces[3], nextVoidId++);
-        vignette.classList.add('pulse-red');
+        for (let i = 0; i < 4; i++) {
+          createVoid(Math.random() * (config.GAME_WIDTH - config.VOID_WIDTH_MIN), config.VOID_WIDTH_MIN, nextVoidId++);
+        }
+        bgLayer.classList.add('distorted');
       } else if (gamePhase === 'SYNTHESIS') {
-        const finalVoid = createVoid(GAME_WIDTH / 2 - 80, 150, chibiFaces[0], nextVoidId++);
-        finalVoid.isSynthesis = true;
-        finalVoid.scale = 1.5;
-        updateVoidSize(finalVoid);
-        vignette.classList.remove('pulse-red');
+        const finalVoid = createVoid(config.GAME_WIDTH / 2 - (config.VOID_WIDTH_MIN * 1.5) / 2, config.VOID_WIDTH_MIN * 1.5, nextVoidId++);
+        bgLayer.classList.remove('distorted');
       }
     }
 
-    function createVoid(x, y, faceConfig, id) {
+    function createVoid(x, size, id) {
       const void_obj = {
         id: id,
         x: x,
-        y: y,
-        width: 120,
-        height: 140,
-        faceConfig: faceConfig,
-        missCount: 0,
+        size: size,
         state: 'happy',
         element: null,
         voidBody: null,
         chibiElement: null,
-        scale: 1,
-        velocity: { x: 0, y: 0 },
+        missCount: 0,
         isSynthesis: false
       };
 
@@ -812,10 +753,8 @@
       const vesselEl = document.createElement('div');
       vesselEl.className = 'void-vessel breathing';
       vesselEl.innerHTML = vesselHTML;
-      vesselEl.style.left = x + 'px';
-      vesselEl.style.bottom = (GAME_HEIGHT - y) + 'px';
-      vesselEl.style.width = void_obj.width + 'px';
-      vesselEl.style.height = void_obj.height + 'px';
+      vesselEl.style.width = size + 'px';
+      vesselEl.style.height = size + 'px';
 
       voidsContainer.appendChild(vesselEl);
 
@@ -827,23 +766,10 @@
       return void_obj;
     }
 
-    function updateVoidSize(void_obj) {
-      void_obj.width = 120 * void_obj.scale;
-      void_obj.height = 140 * void_obj.scale;
-      void_obj.element.style.width = void_obj.width + 'px';
-      void_obj.element.style.height = void_obj.height + 'px';
-      void_obj.voidBody.style.width = void_obj.width + 'px';
-      void_obj.voidBody.style.height = void_obj.height + 'px';
-    }
-
     function startGameLoop() {
       const gameLoop = () => {
         if (!gameActive) return;
         if (isHolding) updateBlockPosition();
-        if (gamePhase === 'CONSUMPTION') {
-          updateVoidPhysics();
-          checkVoidCollisions();
-        }
         if (!isHolding) checkBlockDrop();
         requestAnimationFrame(gameLoop);
       };
@@ -854,63 +780,19 @@
       playerBlock.style.left = blockX + 'px';
     }
 
-    function updateVoidPhysics() {
-      voids.forEach(void_obj => {
-        if (gamePhase === 'CONSUMPTION') {
-          void_obj.x += void_obj.velocity.x;
-          void_obj.y += void_obj.velocity.y;
-          if (void_obj.x < 0 || void_obj.x + void_obj.width > GAME_WIDTH) {
-            void_obj.velocity.x *= -0.8;
-            void_obj.x = Math.max(0, Math.min(void_obj.x, GAME_WIDTH - void_obj.width));
-          }
-          if (void_obj.y < 0 || void_obj.y + void_obj.height > GAME_HEIGHT * 0.8) {
-            void_obj.velocity.y *= -0.8;
-            void_obj.y = Math.max(0, Math.min(void_obj.y, GAME_HEIGHT * 0.8 - void_obj.height));
-          }
-          void_obj.velocity.y += 0.2;
-          void_obj.element.style.left = void_obj.x + 'px';
-          void_obj.element.style.bottom = (GAME_HEIGHT - void_obj.y - void_obj.height) + 'px';
-        }
-      });
-    }
-
-    function checkVoidCollisions() {
-      for (let i = 0; i < voids.length; i++) {
-        for (let j = i + 1; j < voids.length; j++) {
-          const v1 = voids[i];
-          const v2 = voids[j];
-          const dx = (v1.x + v1.width / 2) - (v2.x + v2.width / 2);
-          const dy = (v1.y + v1.height / 2) - (v2.y + v2.height / 2);
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const minDist = (v1.width + v2.width) / 2;
-          if (distance < minDist) swallowVoid(v1, v2);
-        }
-      }
-    }
-
-    function swallowVoid(predator, prey) {
-      const mouthEl = predator.chibiElement.querySelector('.mouth');
-      mouthEl.classList.remove('happy', 'worried', 'angry');
-      mouthEl.classList.add('yawn');
-      prey.element.classList.add('glitch');
-      predator.scale += 0.3;
-      updateVoidSize(predator);
-      setTimeout(() => {
-        prey.element.remove();
-        voids = voids.filter(v => v.id !== prey.id);
-      }, 300);
-    }
-
     function checkBlockDrop() {
       const blockCenterX = blockX + blockWidth / 2;
-      const blockEndY = 80;
+      const blockY = config.GAME_HEIGHT - 50;
+
       voids.forEach(void_obj => {
-        const voidCenterX = void_obj.x + void_obj.width / 2;
+        const voidCenterX = void_obj.x + void_obj.size / 2;
         const voidLeft = void_obj.x;
-        const voidRight = void_obj.x + void_obj.width;
-        if (blockEndY > void_obj.y && blockEndY < void_obj.y + void_obj.height) {
-          const fitWidth = Math.abs(blockWidth - void_obj.width);
-          if (fitWidth < PERFECT_FIT_TOLERANCE) {
+        const voidRight = void_obj.x + void_obj.size;
+
+        if (blockY > 0) {
+          const fitWidth = Math.abs(blockWidth - void_obj.size);
+
+          if (fitWidth < config.PERFECT_FIT_TOLERANCE) {
             handlePerfectFit(void_obj);
           } else if (blockCenterX > voidLeft && blockCenterX < voidRight) {
             handleMiss(void_obj);
@@ -923,18 +805,29 @@
       score++;
       consecutiveMisses = 0;
       scoreNum.textContent = score;
+
+      // Grow the block
+      blockWidth = Math.min(blockWidth * 1.15, config.GAME_WIDTH * 0.8);
+      playerBlock.style.width = blockWidth + 'px';
+
+      // Star burst eyes
       const eyes = void_obj.chibiElement.querySelectorAll('.eye');
       eyes.forEach(eye => eye.classList.add('starburst'));
+
+      // Glow cheeks green
       const blushes = void_obj.chibiElement.querySelectorAll('.blush');
       blushes.forEach(blush => blush.classList.add('glow-green'));
+
+      // Pulse animation
       playerBlock.classList.add('pulse');
-      playerBlock.style.animation = 'block-pulse 0.3s ease-out';
+
       checkPhaseProgression();
       setTimeout(() => resetForNextTurn(), 600);
     }
 
     function handleMiss(void_obj) {
       consecutiveMisses++;
+
       if (consecutiveMisses === 1) {
         setVoidState(void_obj, 'worried');
       } else if (consecutiveMisses === 2) {
@@ -950,36 +843,30 @@
       const mouth = chibi.querySelector('.mouth');
       const blushes = chibi.querySelectorAll('.blush');
       const eyebrows = chibi.querySelectorAll('.eyebrow');
+      const eyes = chibi.querySelectorAll('.eye');
+      const voidBody = void_obj.voidBody;
+
       if (state === 'worried') {
-        mouth.classList.remove('angry', 'yawn');
-        mouth.classList.add('worried');
+        mouth.className = 'mouth worried';
         blushes.forEach(blush => {
           blush.classList.remove('glow-green', 'glow-red');
-          blush.classList.add('glow-orange');
         });
-        eyebrows.forEach((brow, idx) => {
-          if (idx === 0) brow.classList.add('angry-left');
-          else brow.classList.add('angry-right');
+        eyebrows.forEach(brow => {
+          brow.classList.add('angry');
         });
       } else if (state === 'angry') {
-        mouth.classList.remove('worried');
-        mouth.classList.add('angry');
+        mouth.className = 'mouth angry';
         blushes.forEach(blush => {
-          blush.classList.remove('glow-orange');
           blush.classList.add('glow-red');
         });
-        void_obj.element.classList.add('twitching');
-        const eyes = chibi.querySelectorAll('.eye');
-        eyes.forEach(eye => {
-          eye.style.width = '50px';
-          eye.style.height = '50px';
-          eye.style.borderRadius = '50%';
-          const pupil = eye.querySelector('.pupil');
-          if (pupil) {
-            pupil.style.width = '40px';
-            pupil.style.height = '40px';
-          }
+        eyebrows.forEach(brow => {
+          brow.classList.add('angry-left', 'angry-right', 'angry');
         });
+        eyes.forEach(eye => {
+          eye.classList.add('scared');
+        });
+        void_obj.element.classList.add('twitching');
+        voidBody.classList.add('angry-distorted');
       }
     }
 
@@ -987,12 +874,14 @@
       gameActive = false;
       jumpscareOverlay.classList.add('active', 'shake');
       guide.style.opacity = '0';
+
       setTimeout(() => {
         jumpscareOverlay.classList.remove('active', 'shake');
         gameActive = true;
         consecutiveMisses = 0;
         score = Math.max(0, score - 1);
         scoreNum.textContent = score;
+
         if (score >= 10) {
           gamePhase = 'CONSUMPTION';
         } else if (score >= 5) {
@@ -1000,6 +889,7 @@
         } else {
           gamePhase = 'INCUBATION';
         }
+
         createVoidsForPhase();
         guide.style.opacity = '1';
       }, 1500);
@@ -1008,24 +898,23 @@
     function checkPhaseProgression() {
       if (score === 5) {
         gamePhase = 'ROOMMATES';
+        createVoidsForPhase();
       } else if (score === 10) {
         gamePhase = 'CONSUMPTION';
+        createVoidsForPhase();
       } else if (score === 15) {
         gamePhase = 'SYNTHESIS';
         endGame();
-        return;
-      }
-      if ((score === 5 || score === 10) && !isHolding) {
-        createVoidsForPhase();
       }
     }
 
     function resetForNextTurn() {
       if (gamePhase === 'SYNTHESIS') return;
-      playerBlock.style.animation = 'none';
+
       playerBlock.classList.remove('pulse');
-      blockX = GAME_WIDTH / 2 - blockWidth / 2;
+      blockX = (config.GAME_WIDTH - blockWidth) / 2;
       playerBlock.style.left = blockX + 'px';
+
       if (gamePhase === 'INCUBATION' || gamePhase === 'ROOMMATES') {
         voids.forEach(v => {
           v.state = 'happy';
@@ -1042,21 +931,20 @@
       const blushes = chibi.querySelectorAll('.blush');
       const eyes = chibi.querySelectorAll('.eye');
       const eyebrows = chibi.querySelectorAll('.eyebrow');
+      const voidBody = void_obj.voidBody;
+
       mouth.className = 'mouth';
       blushes.forEach(blush => {
         blush.className = 'blush';
-        blush.style.background = 'radial-gradient(ellipse, rgba(255, 100, 160, 0.7) 0%, transparent 70%)';
       });
       eyes.forEach(eye => {
-        eye.classList.remove('starburst');
-        eye.style.width = '30px';
-        eye.style.height = '40px';
-        eye.style.borderRadius = '50% 50% 40% 40%';
+        eye.classList.remove('starburst', 'scared');
       });
       eyebrows.forEach(brow => {
-        brow.classList.remove('angry-left', 'angry-right');
+        brow.classList.remove('angry', 'angry-left', 'angry-right');
       });
       void_obj.element.classList.remove('twitching');
+      voidBody.classList.remove('angry-distorted');
     }
 
     function startDialogues() {
@@ -1078,18 +966,6 @@
     function endGame() {
       gameActive = false;
       guide.style.opacity = '0';
-      const finalVoid = voids[0];
-      const stickBody = document.createElement('div');
-      stickBody.className = 'stick-body emerge';
-      stickBody.innerHTML = `
-        <div class="stick-head"></div>
-        <div class="stick-torso"></div>
-        <div class="stick-arm left"></div>
-        <div class="stick-arm right"></div>
-        <div class="stick-leg left"></div>
-        <div class="stick-leg right"></div>
-      `;
-      finalVoid.element.appendChild(stickBody);
       setTimeout(() => {
         typeMessage('Thank you for the body.', () => {
           setTimeout(() => {
@@ -1122,6 +998,7 @@
       }, 800);
     }
 
+    // Input Handling
     document.addEventListener('mousedown', (e) => {
       if (!gameActive) return;
       isHolding = true;
@@ -1135,9 +1012,10 @@
       if (!gameActive || !isHolding) return;
       const playFieldRect = playField.getBoundingClientRect();
       const relativeX = e.clientX - playFieldRect.left;
-      blockX = Math.max(0, Math.min(relativeX - blockWidth / 2, GAME_WIDTH - blockWidth));
+      blockX = Math.max(0, Math.min(relativeX - blockWidth / 2, config.GAME_WIDTH - blockWidth));
     });
 
+    // Touch support
     document.addEventListener('touchstart', (e) => {
       if (!gameActive) return;
       isHolding = true;
@@ -1153,7 +1031,7 @@
       const playFieldRect = playField.getBoundingClientRect();
       const touch = e.touches[0];
       const relativeX = touch.clientX - playFieldRect.left;
-      blockX = Math.max(0, Math.min(relativeX - blockWidth / 2, GAME_WIDTH - blockWidth));
+      blockX = Math.max(0, Math.min(relativeX - blockWidth / 2, config.GAME_WIDTH - blockWidth));
     });
 
     init();
