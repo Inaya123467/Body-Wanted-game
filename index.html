@@ -38,7 +38,7 @@
       touch-action: none;
     }
 
-    /* Background with cute elements */
+    /* Background */
     #bg-layer {
       position: fixed;
       inset: 0;
@@ -96,15 +96,15 @@
       touch-action: none;
     }
 
-    /* Block Track */
+    /* Block Track - Top area where block moves */
     .block-track {
       position: relative;
       width: 100%;
-      height: 12vh;
+      height: 15vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.1);
       border-radius: 1rem;
       padding: 1vh;
       touch-action: none;
@@ -113,19 +113,14 @@
     /* Player Block - The Box */
     #player-block {
       position: absolute;
-      height: 4vh;
       background: linear-gradient(135deg, #ffffff 0%, #e8e8e8 50%, #ffffff 100%);
       border-radius: 1rem;
       box-shadow: 0 0 2vw rgba(255, 255, 255, 0.9), inset 0 0 1vw rgba(255, 255, 255, 0.4);
       transition: none;
-      left: 0;
-      min-width: 8vw;
       cursor: grab;
-      will-change: left;
-    }
-
-    #player-block:active {
-      cursor: grabbing;
+      will-change: left, width, height;
+      min-width: 50px;
+      min-height: 50px;
     }
 
     #player-block.pulse {
@@ -149,8 +144,8 @@
       width: 100%;
       flex: 1;
       display: flex;
-      align-items: flex-end;
-      justify-content: space-around;
+      align-items: center;
+      justify-content: center;
       padding: 2vh;
       gap: 2vw;
     }
@@ -161,11 +156,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
       transition: all 0.2s ease;
     }
 
-    /* Void Background */
+    /* Void Background - The Dark Circle */
     .void-body {
       position: relative;
       background: radial-gradient(ellipse at center 30%, rgba(20, 20, 40, 0.95) 0%, rgba(10, 10, 20, 0.98) 100%);
@@ -175,6 +170,8 @@
       justify-content: center;
       box-shadow: inset 0 0 3vw rgba(0, 0, 0, 0.95), 0 0 2vw rgba(100, 100, 150, 0.3);
       transition: all 0.3s ease;
+      width: 100%;
+      height: 100%;
     }
 
     .void-vessel.breathing .void-body {
@@ -210,205 +207,92 @@
       flex-direction: column;
     }
 
-    /* Eyes Container */
-    .eyes-container {
+    /* Simple Cute Smiley Face */
+    .face-container {
+      position: relative;
+      width: 60%;
+      height: 60%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Eyes - Simple Dots */
+    .eyes {
       position: absolute;
       top: 20%;
       display: flex;
-      gap: 3vw;
-      width: 80%;
-      justify-content: center;
-    }
-
-    /* Single Eye - Cute */
-    .eye {
-      width: 3.5vw;
-      height: 4.5vw;
-      background: #ffffff;
-      border-radius: 60% 60% 40% 40%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 0.5vw rgba(255, 255, 255, 0.6), inset 0 -0.3vw 0.5vw rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      min-width: 30px;
-      min-height: 30px;
-    }
-
-    .eye.scared {
-      width: 4.5vw;
-      height: 5.5vw;
-      background: #ffaaaa;
-      box-shadow: 0 0 1vw rgba(255, 100, 100, 0.8), inset 0 -0.3vw 0.5vw rgba(0, 0, 0, 0.4);
-      min-width: 35px;
-      min-height: 35px;
-    }
-
-    .pupil {
-      width: 1.8vw;
-      height: 2.2vw;
-      background: #1a1a2e;
-      border-radius: 50%;
-      position: relative;
-      transition: all 0.2s ease;
-      min-width: 14px;
-      min-height: 14px;
-    }
-
-    .eye.scared .pupil {
-      width: 2.5vw;
-      height: 3vw;
-      background: #ff0000;
-      min-width: 18px;
-      min-height: 18px;
-    }
-
-    .sparkle {
-      position: absolute;
-      width: 0.7vw;
-      height: 0.7vw;
-      background: #ffffff;
-      border-radius: 50%;
-      top: 0.3vw;
-      left: 0.3vw;
-      box-shadow: 0 0 0.3vw rgba(255, 255, 255, 0.9);
-      min-width: 4px;
-      min-height: 4px;
-    }
-
-    /* Star Burst Eyes */
-    .eye.starburst {
-      width: 5vw;
-      height: 5vw;
-      background: conic-gradient(from 0deg, #ffff00, #ffffff, #ffff00);
-      border-radius: 50%;
-      animation: starburst-spin 0.4s ease-out;
-      min-width: 40px;
-      min-height: 40px;
-    }
-
-    @keyframes starburst-spin {
-      0% { transform: scale(0.5) rotate(0deg); opacity: 0; }
-      100% { transform: scale(1) rotate(360deg); opacity: 1; }
-    }
-
-    /* Eyebrows */
-    .eyebrow {
-      position: absolute;
-      height: 0.5vw;
-      background: #1a1a2e;
-      border-radius: 0.2vw;
-      transition: all 0.3s ease;
-      min-height: 3px;
-    }
-
-    .eyebrow.left {
-      top: 15%;
-      left: 8%;
-      width: 18%;
-      transform: rotate(0deg);
-    }
-
-    .eyebrow.right {
-      top: 15%;
-      right: 8%;
-      width: 18%;
-      transform: rotate(0deg);
-    }
-
-    .eyebrow.angry {
-      background: #ff3333;
-    }
-
-    .eyebrow.angry-left {
-      transform: rotate(-30deg);
-    }
-
-    .eyebrow.angry-right {
-      transform: rotate(30deg);
-    }
-
-    /* Cheeks */
-    .cheeks-container {
-      position: absolute;
-      top: 50%;
+      gap: 2vw;
       width: 100%;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 5%;
+      justify-content: center;
     }
 
-    .blush {
-      width: 2.5vw;
-      height: 2vw;
-      background: radial-gradient(ellipse, rgba(255, 150, 200, 0.85) 0%, transparent 70%);
+    .eye-dot {
+      width: 1.5vw;
+      height: 1.5vw;
+      background: #ffffff;
       border-radius: 50%;
-      filter: blur(0.3vw);
+      box-shadow: 0 0 0.5vw rgba(255, 255, 255, 0.6);
       transition: all 0.3s ease;
-      min-width: 16px;
+      min-width: 12px;
       min-height: 12px;
     }
 
-    .blush.glow-green {
-      background: radial-gradient(ellipse, rgba(0, 255, 100, 0.95) 0%, transparent 70%);
-      box-shadow: 0 0 1.5vw rgba(0, 255, 100, 0.8);
-      animation: blush-pulse 0.4s ease-out;
+    .eye-dot.scared {
+      width: 2vw;
+      height: 2vw;
+      background: #ff0000;
+      box-shadow: 0 0 1vw rgba(255, 0, 0, 0.8);
+      min-width: 16px;
+      min-height: 16px;
     }
 
-    .blush.glow-red {
-      background: radial-gradient(ellipse, rgba(255, 50, 50, 0.95) 0%, transparent 70%);
-      box-shadow: 0 0 1.5vw rgba(255, 50, 50, 0.8);
-    }
-
-    @keyframes blush-pulse {
-      0% { transform: scale(1); opacity: 0.5; }
-      100% { transform: scale(1.4); opacity: 1; }
-    }
-
-    /* Mouth */
-    .mouth {
+    /* Mouth - Smile */
+    .mouth-smile {
       position: absolute;
       bottom: 15%;
-      width: 3vw;
-      height: 1.5vw;
-      border-bottom: 0.35vw solid #ffffff;
-      border-radius: 0 0 1.5vw 1.5vw;
+      width: 4vw;
+      height: 2vw;
+      border: 0.3vw solid #ffffff;
+      border-top: none;
+      border-radius: 0 0 4vw 4vw;
       transition: all 0.3s ease;
-      min-width: 20px;
-      min-height: 10px;
+      min-width: 30px;
+      min-height: 15px;
     }
 
-    .mouth.worried {
-      width: 2.5vw;
+    .mouth-smile.worried {
+      width: 3vw;
       height: 0.3vw;
-      border-bottom: 0.25vw solid #000;
+      border: none;
+      border-top: 0.3vw solid #000;
       border-radius: 0;
-      min-width: 18px;
+      min-width: 20px;
       min-height: 2px;
     }
 
-    .mouth.angry {
-      width: 3.5vw;
+    .mouth-smile.angry {
+      width: 5vw;
       height: 0.4vw;
       border: none;
       border-top: 0.4vw solid #ff3b3b;
       border-radius: 0;
       transform: rotate(20deg);
-      min-width: 22px;
+      min-width: 35px;
       min-height: 2px;
     }
 
-    .mouth.distorted {
-      width: 4vw;
-      height: 3vw;
+    .mouth-smile.distorted {
+      width: 6vw;
+      height: 4vw;
       border: none;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.9);
       box-shadow: inset 0 0 1vw rgba(255, 0, 0, 0.5);
       animation: mouth-twitch 0.1s infinite;
-      min-width: 28px;
-      min-height: 20px;
+      min-width: 40px;
+      min-height: 28px;
     }
 
     @keyframes mouth-twitch {
@@ -433,19 +317,6 @@
       opacity: 0;
       transition: opacity 0.3s ease;
       z-index: 3;
-    }
-
-    .speech-bubble::after {
-      content: '';
-      position: absolute;
-      bottom: -0.6vw;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 0.6vw solid transparent;
-      border-right: 0.6vw solid transparent;
-      border-top: 0.6vw solid rgba(30, 30, 40, 0.95);
     }
 
     .speech-bubble.visible {
@@ -626,7 +497,7 @@
       <div id="voids-container"></div>
     </div>
 
-    <div id="guide">[ HOLD / TAP TO MOVE ]</div>
+    <div id="guide">[ TAP TO STOP & GROW - RELEASE TO DROP ]</div>
   </div>
 
   <div id="jumpscare-overlay">
@@ -648,9 +519,11 @@
       return {
         GAME_WIDTH: window.innerWidth * 0.95,
         GAME_HEIGHT: window.innerHeight * 0.70,
-        BLOCK_WIDTH_INITIAL: Math.max(80, window.innerWidth * 0.12),
-        VOID_WIDTH_MIN: Math.max(90, window.innerWidth * 0.11),
-        PERFECT_FIT_TOLERANCE: 25
+        BLOCK_WIDTH_INITIAL: Math.max(60, window.innerWidth * 0.10),
+        BLOCK_HEIGHT_INITIAL: Math.max(50, window.innerHeight * 0.06),
+        VOID_SIZE_MIN: Math.max(120, Math.min(window.innerWidth, window.innerHeight) * 0.15),
+        PERFECT_FIT_TOLERANCE: 30,
+        BLOCK_SPEED: 0.08 // pixels per frame
       };
     };
 
@@ -672,8 +545,7 @@
     const bgLayer = document.getElementById('bg-layer');
     const guide = document.getElementById('guide');
     const jumpscareOverlay = document.getElementById('jumpscare-overlay');
-    const terminalView = document.getElementById('terminal-view');
-    const typewriter = document.getElementById('typewriter');
+    const blockTrack = document.querySelector('.block-track');
 
     // Game State
     let score = 0;
@@ -681,7 +553,9 @@
     let gameActive = true;
     let isHolding = false;
     let blockWidth = config.BLOCK_WIDTH_INITIAL;
+    let blockHeight = config.BLOCK_HEIGHT_INITIAL;
     let blockX = (config.GAME_WIDTH - blockWidth) / 2;
+    let blockDirection = 1; // 1 for right, -1 for left
     let gamePhase = 'INCUBATION';
 
     let voids = [];
@@ -707,8 +581,11 @@
       voids = [];
       nextVoidId = 0;
       blockWidth = config.BLOCK_WIDTH_INITIAL;
+      blockHeight = config.BLOCK_HEIGHT_INITIAL;
       blockX = (config.GAME_WIDTH - blockWidth) / 2;
+      blockDirection = 1;
       playerBlock.style.width = blockWidth + 'px';
+      playerBlock.style.height = blockHeight + 'px';
       playerBlock.style.left = blockX + 'px';
       scoreNum.textContent = '0';
       bgLayer.classList.remove('distorted');
@@ -723,49 +600,43 @@
       voids = [];
 
       if (gamePhase === 'INCUBATION') {
-        createVoid(config.GAME_WIDTH / 2 - config.VOID_WIDTH_MIN / 2, config.VOID_WIDTH_MIN, nextVoidId++);
+        createVoid(nextVoidId++);
       } else if (gamePhase === 'ROOMMATES') {
-        createVoid(config.GAME_WIDTH * 0.25, config.VOID_WIDTH_MIN, nextVoidId++);
-        createVoid(config.GAME_WIDTH * 0.75 - config.VOID_WIDTH_MIN, config.VOID_WIDTH_MIN, nextVoidId++);
+        createVoid(nextVoidId++);
+        createVoid(nextVoidId++);
         startDialogues();
       } else if (gamePhase === 'CONSUMPTION') {
         for (let i = 0; i < 4; i++) {
-          createVoid(Math.random() * (config.GAME_WIDTH - config.VOID_WIDTH_MIN), config.VOID_WIDTH_MIN, nextVoidId++);
+          createVoid(nextVoidId++);
         }
         bgLayer.classList.add('distorted');
       } else if (gamePhase === 'SYNTHESIS') {
-        const finalVoid = createVoid(config.GAME_WIDTH / 2 - (config.VOID_WIDTH_MIN * 1.5) / 2, config.VOID_WIDTH_MIN * 1.5, nextVoidId++);
+        createVoid(nextVoidId++);
         bgLayer.classList.remove('distorted');
       }
     }
 
-    function createVoid(x, size, id) {
+    function createVoid(id) {
       const void_obj = {
         id: id,
-        x: x,
-        size: size,
+        size: config.VOID_SIZE_MIN,
         state: 'happy',
         element: null,
         voidBody: null,
         chibiElement: null,
-        missCount: 0,
-        isSynthesis: false
+        missCount: 0
       };
 
       const vesselHTML = `
         <div class="void-body">
           <div class="chibi-face">
-            <div class="eyebrow left"></div>
-            <div class="eyebrow right"></div>
-            <div class="eyes-container">
-              <div class="eye"><div class="pupil"><div class="sparkle"></div></div></div>
-              <div class="eye"><div class="pupil"><div class="sparkle"></div></div></div>
+            <div class="face-container">
+              <div class="eyes">
+                <div class="eye-dot"></div>
+                <div class="eye-dot"></div>
+              </div>
+              <div class="mouth-smile"></div>
             </div>
-            <div class="cheeks-container">
-              <div class="blush"></div>
-              <div class="blush"></div>
-            </div>
-            <div class="mouth"></div>
           </div>
         </div>
         <div class="speech-bubble"></div>
@@ -774,8 +645,8 @@
       const vesselEl = document.createElement('div');
       vesselEl.className = 'void-vessel breathing';
       vesselEl.innerHTML = vesselHTML;
-      vesselEl.style.width = size + 'px';
-      vesselEl.style.height = size + 'px';
+      vesselEl.style.width = void_obj.size + 'px';
+      vesselEl.style.height = void_obj.size + 'px';
 
       voidsContainer.appendChild(vesselEl);
 
@@ -790,34 +661,71 @@
     function startGameLoop() {
       const gameLoop = () => {
         if (!gameActive) return;
-        if (isHolding) updateBlockPosition();
-        if (!isHolding) checkBlockDrop();
+
+        // Move block side to side if not holding
+        if (!isHolding) {
+          moveBlockSideToSide();
+        } else {
+          // Grow block while holding
+          growBlock();
+        }
+
+        // Check for perfect fit when block would drop
+        if (!isHolding && checkIfBlockShouldDrop()) {
+          checkBlockDrop();
+        }
+
         requestAnimationFrame(gameLoop);
       };
       gameLoop();
+    }
+
+    function moveBlockSideToSide() {
+      blockX += blockDirection * config.BLOCK_SPEED;
+
+      // Bounce off edges
+      if (blockX <= 0 || blockX + blockWidth >= config.GAME_WIDTH) {
+        blockDirection *= -1;
+      }
+
+      blockX = Math.max(0, Math.min(blockX, config.GAME_WIDTH - blockWidth));
+      updateBlockPosition();
+    }
+
+    function growBlock() {
+      // Grow slowly while holding
+      blockWidth += 0.5;
+      blockHeight += 0.4;
+      
+      // Limit maximum size
+      blockWidth = Math.min(blockWidth, config.GAME_WIDTH * 0.9);
+      blockHeight = Math.min(blockHeight, config.GAME_HEIGHT * 0.15);
+
+      playerBlock.style.width = blockWidth + 'px';
+      playerBlock.style.height = blockHeight + 'px';
+      
+      // Keep centered horizontally
+      blockX = (config.GAME_WIDTH - blockWidth) / 2;
+      updateBlockPosition();
     }
 
     function updateBlockPosition() {
       playerBlock.style.left = blockX + 'px';
     }
 
+    function checkIfBlockShouldDrop() {
+      // Simulate drop - just check on every few frames
+      return Math.random() < 0.05;
+    }
+
     function checkBlockDrop() {
-      const blockCenterX = blockX + blockWidth / 2;
-      const blockY = config.GAME_HEIGHT - 50;
-
       voids.forEach(void_obj => {
-        const voidCenterX = void_obj.x + void_obj.size / 2;
-        const voidLeft = void_obj.x;
-        const voidRight = void_obj.x + void_obj.size;
+        const fitWidth = Math.abs(blockWidth - void_obj.size);
 
-        if (blockY > 0) {
-          const fitWidth = Math.abs(blockWidth - void_obj.size);
-
-          if (fitWidth < config.PERFECT_FIT_TOLERANCE) {
-            handlePerfectFit(void_obj);
-          } else if (blockCenterX > voidLeft && blockCenterX < voidRight) {
-            handleMiss(void_obj);
-          }
+        if (fitWidth < config.PERFECT_FIT_TOLERANCE) {
+          handlePerfectFit(void_obj);
+        } else if (fitWidth < config.PERFECT_FIT_TOLERANCE * 2) {
+          handleMiss(void_obj);
         }
       });
     }
@@ -826,15 +734,6 @@
       score++;
       consecutiveMisses = 0;
       scoreNum.textContent = score;
-
-      blockWidth = Math.min(blockWidth * 1.15, config.GAME_WIDTH * 0.8);
-      playerBlock.style.width = blockWidth + 'px';
-
-      const eyes = void_obj.chibiElement.querySelectorAll('.eye');
-      eyes.forEach(eye => eye.classList.add('starburst'));
-
-      const blushes = void_obj.chibiElement.querySelectorAll('.blush');
-      blushes.forEach(blush => blush.classList.add('glow-green'));
 
       playerBlock.classList.add('pulse');
 
@@ -857,29 +756,15 @@
     function setVoidState(void_obj, state) {
       void_obj.state = state;
       const chibi = void_obj.chibiElement;
-      const mouth = chibi.querySelector('.mouth');
-      const blushes = chibi.querySelectorAll('.blush');
-      const eyebrows = chibi.querySelectorAll('.eyebrow');
-      const eyes = chibi.querySelectorAll('.eye');
+      const mouth = chibi.querySelector('.mouth-smile');
+      const eyeDots = chibi.querySelectorAll('.eye-dot');
       const voidBody = void_obj.voidBody;
 
       if (state === 'worried') {
-        mouth.className = 'mouth worried';
-        blushes.forEach(blush => {
-          blush.classList.remove('glow-green', 'glow-red');
-        });
-        eyebrows.forEach(brow => {
-          brow.classList.add('angry');
-        });
+        mouth.className = 'mouth-smile worried';
       } else if (state === 'angry') {
-        mouth.className = 'mouth angry';
-        blushes.forEach(blush => {
-          blush.classList.add('glow-red');
-        });
-        eyebrows.forEach(brow => {
-          brow.classList.add('angry-left', 'angry-right', 'angry');
-        });
-        eyes.forEach(eye => {
+        mouth.className = 'mouth-smile angry';
+        eyeDots.forEach(eye => {
           eye.classList.add('scared');
         });
         void_obj.element.classList.add('twitching');
@@ -929,7 +814,12 @@
       if (gamePhase === 'SYNTHESIS') return;
 
       playerBlock.classList.remove('pulse');
+      blockWidth = config.BLOCK_WIDTH_INITIAL;
+      blockHeight = config.BLOCK_HEIGHT_INITIAL;
       blockX = (config.GAME_WIDTH - blockWidth) / 2;
+      blockDirection = Math.random() > 0.5 ? 1 : -1;
+      playerBlock.style.width = blockWidth + 'px';
+      playerBlock.style.height = blockHeight + 'px';
       playerBlock.style.left = blockX + 'px';
 
       if (gamePhase === 'INCUBATION' || gamePhase === 'ROOMMATES') {
@@ -944,21 +834,13 @@
 
     function resetChibiFace(void_obj) {
       const chibi = void_obj.chibiElement;
-      const mouth = chibi.querySelector('.mouth');
-      const blushes = chibi.querySelectorAll('.blush');
-      const eyes = chibi.querySelectorAll('.eye');
-      const eyebrows = chibi.querySelectorAll('.eyebrow');
+      const mouth = chibi.querySelector('.mouth-smile');
+      const eyeDots = chibi.querySelectorAll('.eye-dot');
       const voidBody = void_obj.voidBody;
 
-      mouth.className = 'mouth';
-      blushes.forEach(blush => {
-        blush.className = 'blush';
-      });
-      eyes.forEach(eye => {
-        eye.classList.remove('starburst', 'scared');
-      });
-      eyebrows.forEach(brow => {
-        brow.classList.remove('angry', 'angry-left', 'angry-right');
+      mouth.className = 'mouth-smile';
+      eyeDots.forEach(eye => {
+        eye.classList.remove('scared');
       });
       void_obj.element.classList.remove('twitching');
       voidBody.classList.remove('angry-distorted');
@@ -993,6 +875,7 @@
     }
 
     function typeMessage(message, callback) {
+      const typewriter = document.getElementById('typewriter');
       typewriter.innerHTML = '';
       let charIndex = 0;
       const typeInterval = setInterval(() => {
@@ -1011,44 +894,24 @@
       gameContainer.style.transition = 'opacity 0.8s ease-out';
       setTimeout(() => {
         gameContainer.style.display = 'none';
-        terminalView.classList.add('active');
+        document.getElementById('terminal-view').classList.add('active');
       }, 800);
     }
 
-    // Input Handling - iPad/Touch Compatible
-    let lastTouchX = 0;
-
-    playField.addEventListener('pointerdown', (e) => {
+    // Input Handling
+    blockTrack.addEventListener('pointerdown', (e) => {
       if (!gameActive) return;
       isHolding = true;
-      handlePointerMove(e);
+      e.preventDefault();
     });
 
-    playField.addEventListener('pointermove', (e) => {
-      if (!gameActive || !isHolding) return;
-      handlePointerMove(e);
-    });
-
-    playField.addEventListener('pointerup', (e) => {
+    document.addEventListener('pointerup', (e) => {
       isHolding = false;
     });
 
-    playField.addEventListener('pointercancel', (e) => {
+    document.addEventListener('pointercancel', (e) => {
       isHolding = false;
     });
-
-    function handlePointerMove(e) {
-      const playFieldRect = playField.getBoundingClientRect();
-      let clientX = e.clientX;
-      
-      if (e.touches && e.touches.length > 0) {
-        clientX = e.touches[0].clientX;
-      }
-      
-      const relativeX = clientX - playFieldRect.left;
-      blockX = Math.max(0, Math.min(relativeX - blockWidth / 2, config.GAME_WIDTH - blockWidth));
-      updateBlockPosition();
-    }
 
     init();
   </script>
